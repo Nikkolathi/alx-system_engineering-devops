@@ -8,9 +8,9 @@
 #You must use the while loop (for and until are forbidden)
 #You must use the case statement
 
-count=0
+count=1
 
-while [ $count -lt 20 ]
+while [ $count -lt 21 ]
 do
   if [ $count -eq 4 ]
   then
@@ -26,6 +26,7 @@ do
     echo "bad luck from Italy"
   else
     echo $count
+
   fi
   (( count++ ))
-done
+ done
