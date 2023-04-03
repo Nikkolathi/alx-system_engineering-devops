@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Configure your Nginx server so that /redirect_me is redirecting
-# to another page.
-sudo apt-get update -y
-sudo apt-get install -y nginx
+#Configure a new Nginx server so that /redirect_me is redirecting to another page
 
-echo "Hello World!" > /var/www/html/index.nginx-debian.html
-sudo sed -i "/listen 80 default_server;/a rewrite ^/redirect_me https://twitter.com/hashtag/MUFC?src=hashtag_click&f=live permanent;" /etc/nginx/sites-enabled/default
-
-sudo service nginx restart
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+service nginx start
+echo "Hello World" > /var/www/html/index.nginx-debian.html
+sed -i "/server_name _;/ a\\\trewrite ^/redirect_me https://www.youtube.com/ permanent;" /etc/nginx/sites-available/default
+service nginx restart
