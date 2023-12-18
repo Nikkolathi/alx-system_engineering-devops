@@ -1,22 +1,3 @@
-global
-        log /dev/log    local0
-        log /dev/log    local1 notice
-        chroot /var/lib/haproxy
-        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-        stats timeout 30s
-        user haproxy
-        group haproxy
-        daemon
-
-        # Default SSL material locations
-        ca-base /etc/ssl/certs
-        crt-base /etc/ssl/private
-
-        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
 defaults
         log     global
         mode    http
@@ -32,14 +13,14 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-frontend themaingi-tech-frontend
-        bind *:80
-        bind *:443 ssl crt /etc/haproxy/certs/themaingi.tech.pem
-        http-request redirect scheme https unless { ssl_fc }
-        http-request set-header X-Forwarded-Proto https
-        default_backend themaingi-tech-backend
+frontend themaingi.tech frontend
+    bind *:80
+    bind *:443 ssl crt /etc/letsencrypt/live/www.themaingi.tech/fullchain.pem
+    redirect scheme https code 301 if !{ ssl_fc }
+    mode http
+    default_backend themaingi.tech-webservers
 
-backend themaingi-tech-backend
-        balance roundrobin
-        server 108343-web-01 100.25.201.234:80 check
-        server 108343-web-02 100.25.130.255:80 check
+backend themaingi.tech-webservers
+    balance roundrobin
+    server 108343-web-01 34.207.83.169:80 check
+    server 108343-web-02 18.234.249.202:80 check
