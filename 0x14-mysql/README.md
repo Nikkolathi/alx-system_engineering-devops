@@ -1,4 +1,4 @@
-
+ql server things
 0x14. MySQL
 DevOps
 SysAdmin
