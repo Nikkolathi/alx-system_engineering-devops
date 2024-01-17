@@ -1,19 +1,17 @@
 #!/usr/bin/python3
-"""
-queries the Reddit API and returns the number of subscribers (not active users,
-total subscribers) for a given subreddit. If an invalid subreddit is given,
-return 0
-"""
-from requests import get
-from sys import argv
+"""Module for task 0"""
 
 
 def number_of_subscribers(subreddit):
-    """returns number of subscribers for a given subreddit"""
-    r_subreddit = get('http://www.reddit.com/r/{}/about.json'.
-                      format(subreddit), headers={'User-Agent': 'Mybot'})
-    try:
-        subreddit_dict = r_subreddit.json()
-        return subreddit_dict['data']['subscribers']
-    except:
+    """Queries the Reddit API and returns the number of subscribers
+    to the subreddit"""
+    import requests
+
+    sub_info = requests.get("https://www.reddit.com/r/{}/about.json"
+                            .format(subreddit),
+                            headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+    if sub_info.status_code >= 300:
         return 0
+
+    return sub_info.json().get("data").get("subscribers")
